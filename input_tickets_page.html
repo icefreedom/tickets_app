@@ -1,0 +1,34 @@
+<html>
+    <script type="text/javascript">
+        function validateDigits(evt) {
+            var theEvent = evt || window.event;
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode( key );
+            //var regex = /[0-9]|\./;
+            var regex = /[0-9]/;
+            if( !regex.test(key) ) {
+                theEvent.returnValue = false;
+                if(theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
+        function validateForm(formObj) {
+            //not blank
+            for(var i = 0; i < formObj.length; ++i) {
+                if(formObj[i].value == '')
+                    return false;
+            }
+            return true;
+        }
+    </script>
+    <body>
+        <div>已保存的tickets数: <b>{{ tickets_count }}</b> </div>
+        <form action="/input_tickets_handler" method="post" onsubmit="return validateForm(this)">
+            <div>当日买进货币:<input type="text" name="buyin" value="" onkeypress="validateDigits(event)" /> </div>
+            <div>当日卖出货币:<input type="text" name="sellout" value="" onkeypress="validateDigits(event)" /> </div>
+            <div>当前成交价格:<input type="text" name="price" value="" onkeypress="validateDigits(event)" /> </div>
+            <div>当前买进的最高报价:<input type="text" name="high_price_buyin" value="" onkeypress="validateDigits(event)" /> </div>
+            <div>当前卖出的最高报价:<input type="text" name="high_price_sellout" value="" onkeypress="validateDigits(event)" /> </div>
+            <div><input type="submit" value="保存"></div>
+        </form>
+    </body>
+</html>

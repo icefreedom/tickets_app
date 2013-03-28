@@ -1,0 +1,4 @@
+cron:
+- description: disconnect timeout clients
+  url: /clearOldClient
+  schedule: every 1 minutes

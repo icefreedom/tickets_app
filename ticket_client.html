@@ -1,0 +1,50 @@
+<html>
+    <head>
+        <script type="text/javascript" src='/_ah/channel/jsapi'></script>
+    </head>
+    <body>
+        <script type="text/javascript">
+            var token = '{{ access_token }}';
+            var socket;
+            openChannel = function() {
+                var channel = new goog.appengine.Channel(token);
+                var handler = {
+                    'onopen': onOpened,
+                    'onmessage': onMessage,
+                    'onerror': onError,
+                    'onclose': onClose
+                };
+                socket = channel.open(handler);
+            }
+            onMessage = function(msg) {
+                var obj = JSON.parse(msg.data)
+                if(obj.close != undefined || obj.error != undefined) {
+                    socket.close()
+                    document.getElementById("ticket_msg").value = 'close';
+                } else 
+                    document.getElementById("ticket_msg").value = msg.data;
+            }
+            onOpened = function(msg) {
+                setInterval(sendBeatHeart, 60  * 1000);
+            }
+            onClose = function() {
+                //TODO timeout 
+                document.getElementById("ticket_msg").value = 'closed';
+            }
+            onError = function() {
+                //TODO handle error
+                document.getElementById("ticket_msg").value = 'error';
+            }
+            sendBeatHeart = function(msg) {
+                var path = "/beatheart";
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', path, true);
+                xhr.send();       
+            }
+            setTimeout(openChannel, 100);
+            
+        </script>
+        <div>货币的数字常量 -- 时间(秒) -- 买进货币 -- 卖出货币 -- 当前成交的价格 -- 当前买进的最高报价 -- 当前卖出的最低报价 </div>
+        <div><input id="ticket_msg" type="text" size="50" value="" /> </div>
+    </body>
+</html>
